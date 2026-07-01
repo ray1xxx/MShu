@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>真鹿·八字命理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei,PingFang SC,sans-serif}
+body{background:#1a1a2e;color:#e0d8c8;background-image:radial-gradient(rgba(212,168,83,0.03) 1px,transparent 1px);background-size:30px 30px}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+header{text-align:center;padding:30px 0;border-bottom:1px solid #3d3d5c;margin-bottom:30px}
+header h1{font-size:2.2em;color:#d4a853;letter-spacing:6px}
+header p{color:#8b7d6b;margin-top:6px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{padding:10px 22px;background:#2a2a44;border:none;color:#8b8baa;cursor:pointer;border-radius:6px 6px 0 0;font-size:0.9em}
+.tab-btn:hover{background:#3a3a5c;color:#d4a853}
+.tab-btn.active{background:#3d3d5c;color:#d4a853;font-weight:bold}
+.panel{display:none;background:#2a2a44;border-radius:8px;padding:24px}
+.panel.active{display:block}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group label{display:block;color:#8b7d6b;margin-bottom:4px;font-size:0.85em}
+.form-group input,.form-group select{width:100%;padding:10px;background:#1e1e36;border:1px solid #3d3d5c;border-radius:4px;color:#e0d8c8;font-size:1em}
+.btn-submit{grid-column:1/-1;padding:14px;background:#d4a853;border:none;border-radius:6px;color:#1a1a2e;font-size:1.1em;font-weight:bold;cursor:pointer;margin-top:8px}
+.bazi-display{display:flex;justify-content:center;gap:16px;margin:16px 0;flex-wrap:wrap}
+.bazi-col{text-align:center;padding:12px 20px;background:#1e1e36;border-radius:8px;min-width:80px}
+.bazi-col .gan{font-size:1.8em;color:#e8b85f}
+.bazi-col .zhi{font-size:1.8em;color:#7ec8e3}
+.bazi-col .shen{font-size:0.85em;color:#8b7d6b}
+.bazi-col .label{font-size:0.75em;color:#5c5c7a;margin-top:4px}
+.bazi-col .nayin{font-size:0.75em;color:#6b8b7b;margin-top:2px}
+.school-box{background:#1e1e36;border-left:4px solid #d4a853;padding:16px;margin:12px 0;border-radius:0 6px 6px 0}
+.school-box h4{color:#d4a853;margin-bottom:6px}
+.school-box .basis{color:#5c5c7a;font-size:0.85em;margin-bottom:6px}
+.school-box p{color:#c0b8a8;line-height:1.7;font-size:0.92em}
+.result-table{width:100%;border-collapse:collapse;margin:12px 0}
+.result-table th,.result-table td{padding:8px 12px;border:1px solid #3d3d5c;text-align:center}
+.result-table th{background:#1e1e36;color:#d4a853;font-weight:normal}
+.tarot-placeholder{border:2px dashed #3d3d5c;border-radius:8px;padding:40px;text-align:center;color:#5c5c7a}
+.tarot-placeholder h3{color:#8b7d6b;margin-bottom:8px}
+.tarot-btn{padding:10px 24px;background:#6b5b8b;border:none;border-radius:6px;color:#e0d8c8;cursor:pointer;margin-top:12px}
+.summary-box{background:#1e1e36;border:1px solid #d4a853;border-radius:8px;padding:20px;margin:12px 0}
+.summary-box h4{color:#d4a853;font-size:1.1em;margin-bottom:10px;border-bottom:1px solid #3d3d5c;padding-bottom:8px}
+.summary-box .basis{color:#8b7d6b;font-size:0.85em;margin-bottom:10px}
+.summary-box p{color:#e0d8c8;line-height:2;font-size:0.95em;white-space:pre-wrap}
+.summary-box p span.label{color:#d4a853;font-weight:bold}
+footer{text-align:center;padding:30px;color:#3d3d5c;font-size:0.85em}
+/* ===== 视觉美化：动画 & 装饰 ===== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%{box-shadow:0 0 5px rgba(212,168,83,0.3)}50%{box-shadow:0 0 20px rgba(212,168,83,0.6)}100%{box-shadow:0 0 5px rgba(212,168,83,0.3)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.panel.active{animation:fadeInUp 0.4s ease-out}
+.bazi-col{transition:all 0.3s ease;position:relative;overflow:hidden}
+.bazi-col::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,#d4a853,transparent);transition:left 0.5s ease}
+.bazi-col:hover::before{left:100%}
+.bazi-col:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.3);border-color:#d4a853}
+.bazi-col .gan{text-shadow:0 0 10px rgba(232,184,95,0.3)}
+.section-title{position:relative;display:inline-block;margin:20px 0 12px;padding-bottom:8px}
+.section-title::after{content:"";position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,#d4a853,transparent);border-radius:2px}
+.school-box{transition:all 0.3s ease;border-left:4px solid #d4a853}
+.school-box:hover{transform:translateX(4px);box-shadow:0 4px 15px rgba(212,168,83,0.15)}
+.summary-box{transition:all 0.3s ease;border:1px solid rgba(212,168,83,0.3);background:linear-gradient(135deg,#1e1e36 0%,#252545 100%)}
+.summary-box:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,168,83,0.2);border-color:rgba(212,168,83,0.6)}
+.result-table tr{transition:background 0.2s ease}
+.result-table tr:hover{background:rgba(212,168,83,0.08)}
+.shensha-item{transition:all 0.3s ease}
+.shensha-item:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,0.3);background:#2a2a50}
+.tab-btn{transition:all 0.3s ease;position:relative;overflow:hidden}
+.tab-btn::after{content:"";position:absolute;bottom:0;left:50%;width:0;height:2px;background:#d4a853;transition:all 0.3s ease;transform:translateX(-50%)}
+.tab-btn:hover::after{width:60%}
+.tab-btn.active::after{width:80%}
+.btn-submit{transition:all 0.3s ease;position:relative;overflow:hidden}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,168,53,0.4)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit::after{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.15) 50%,transparent 60%);background-size:200% 200%;animation:shimmer 3s infinite}
+input,select{transition:all 0.3s ease}
+input:focus,select:focus{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,168,83,0.2);border-color:#d4a853!important;outline:none}
+header h1{text-shadow:0 0 20px rgba(212,168,83,0.2);animation:glowPulse 3s ease-in-out infinite}
+.shensha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin:12px 0}
+.shensha-item{background:#1e1e36;border-radius:6px;padding:10px;text-align:center}
+.shensha-item .name{color:#d4a853;font-weight:bold}
+.shensha-item .val{color:#e8b85f;font-size:1.1em}
+.shensha-item .desc{color:#5c5c7a;font-size:0.8em}
+
+.tarot-card{display:inline-block;width:90px;height:140px;margin:6px;background:linear-gradient(145deg,#2a1a3e,#1a1a2e);border:1px solid rgba(180,130,220,0.3);border-radius:8px;cursor:pointer;transition:all 0.4s ease;text-align:center;padding:8px;position:relative;overflow:hidden;vertical-align:top}
+.tarot-card:hover{transform:translateY(-8px) rotate(2deg);box-shadow:0 12px 30px rgba(180,130,220,0.3);border-color:rgba(180,130,220,0.6)}
+.tarot-card .card-img{font-size:2em;margin:8px 0 4px}
+.tarot-card .card-name{color:#c0b0d0;font-size:0.75em;font-weight:bold}
+.tarot-card .card-arcana{color:#6b5b8b;font-size:0.6em}
+.tarot-card.reversed .card-name{color:#ff6b6b}
+.tarot-card.reversed .card-name::after{content:" ⇅"}
+.tarot-card.flip{animation:cardFlip 0.6s ease-out}
+@keyframes cardFlip{0%{transform:rotateY(180deg) scale(0.5);opacity:0}100%{transform:rotateY(0deg) scale(1);opacity:1}}
+.tarot-reading{background:#1e1e36;border-left:4px solid #8b5bbf;padding:16px;margin:12px 0;border-radius:0 8px 8px 0;white-space:pre-wrap;line-height:1.8;font-size:0.92em}
+.tarot-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:16px 0}
+.tarot-controls select,.tarot-controls button{padding:10px 18px;border-radius:6px;font-size:0.95em}
+.tarot-controls select{background:#1e1e36;border:1px solid #3d3d5c;color:#e0d8c8}
+.tarot-controls button{background:linear-gradient(135deg,#6b5b8b,#8b5bbf);border:none;color:white;cursor:pointer;transition:all 0.3s}
+.tarot-controls button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,91,191,0.4)}
+
+
+
+/* ===== 塔罗增强样式 ===== */
+.tarot-layout{max-width:900px;margin:0 auto}
+.tarot-card-container{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:20px 0}
+.tarot-card{width:100px;height:160px;background:linear-gradient(145deg,#2a1a3e,#1a1a2e);border:1px solid rgba(180,130,220,0.3);border-radius:10px;text-align:center;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 0.4s ease}
+.tarot-card:hover{transform:translateY(-10px) rotate(2deg);box-shadow:0 15px 35px rgba(180,130,220,0.4);border-color:rgba(180,130,220,0.7)}
+.tarot-card .card-img{font-size:2.2em;margin:4px 0}
+.tarot-card .card-name{color:#c0b0d0;font-size:0.7em;font-weight:bold}
+.tarot-card .card-keywords{color:#7a6a8a;font-size:0.5em;line-height:1.2;margin-top:2px}
+.tarot-card .card-arcana{color:#6b5b8b;font-size:0.55em;margin-top:1px}
+.tarot-card.reversed{border-color:rgba(255,107,107,0.4)}
+.tarot-card.reversed .card-name{color:#ff6b6b}
+.tarot-card.reversed .card-name::after{content:" \u21c5";font-size:0.8em}
+.tarot-card.flip{animation:cardFlip 0.6s ease-out forwards;opacity:0}
+@keyframes cardFlip{0%{transform:rotateY(180deg) scale(0.3);opacity:0}60%{transform:rotateY(-10deg) scale(1.05);opacity:1}100%{transform:rotateY(0deg) scale(1);opacity:1}}
+.tarot-reading{background:#1e1e36;border-left:4px solid #8b5bbf;padding:18px 20px;margin:16px 0;border-radius:0 10px 10px 0;white-space:pre-wrap;line-height:1.8;font-size:0.92em;color:#d0c8d8}
+.tarot-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:16px 0;justify-content:center}
+.tarot-controls select,.tarot-controls button{padding:12px 20px;border-radius:8px;font-size:0.95em;transition:all 0.3s}
+.tarot-controls select{background:#1e1e36;border:1px solid #3d3d5c;color:#e0d8c8;min-width:200px}
+.tarot-controls button{background:linear-gradient(135deg,#6b5b8b,#8b5bbf);border:none;color:white;cursor:pointer;font-weight:bold}
+.tarot-controls button:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(139,91,191,0.5)}
+.tarot-controls .btn-clear{background:#3d3d5c;color:#8b8baa}
+.tarot-controls .btn-clear:hover{background:#4d4d6c;color:#a0a0c0}
+.tarot-empty-state{padding:40px;text-align:center}
+.tarot-empty-state .icon{font-size:3em;margin-bottom:12px;display:block}
+.tarot-section-title{text-align:center;font-size:1.5em;color:#d4a853;letter-spacing:3px}
+.tarot-section-sub{text-align:center;color:#6b5b8b;font-size:0.85em}
+
+</style>
+</head>
+<body>
+<div class="container">
+<header><h1 style="letter-spacing:8px;font-size:2.4em">☯ 真鹿·八字命理</h1><p style="color:#8b7d6b;margin-top:8px;letter-spacing:3px">旺衰·格局·盲派·取象·纳音 — 五法合一</p><div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#d4a853,transparent);margin:12px auto 0"></div></header>
+<div class="tabs" id="tabContainer">
+<button class="tab-btn active" data-tab="input">📥 排盘</button>
+<button class="tab-btn" data-tab="result">📜 命盘</button>
+<button class="tab-btn" data-tab="analysis">🔮 五法分析</button>
+<button class="tab-btn" data-tab="summary">📋 八字总结</button>
+<button class="tab-btn" data-tab="tarot">🃏 塔罗</button>
+</div>
+<div id="panel-input" class="panel active">
+<div class="form-grid">
+<div class="form-group"><label>姓名</label><input type="text" id="inputName" placeholder=""></div>
+<div class="form-group"><label>性别</label><select id="inputGender"><option value="男">男</option><option value="女">女</option></select></div>
+<div class="form-group"><label>出生年份</label><input type="number" id="inputYear" placeholder=""></div>
+<div class="form-group"><label>出生月份</label><input type="number" id="inputMonth" placeholder=""></div>
+<div class="form-group"><label>出生日期</label><input type="number" id="inputDay" placeholder=""></div>
+<div class="form-group"><label>出生时辰</label><select id="inputHour">
+<option value="">-- 请选择 --</option>
+<option value="0">子时 (23-01)</option>
+<option value="2">丑时 (01-03)</option>
+<option value="4">寅时 (03-05)</option>
+<option value="6">卯时 (05-07)</option>
+<option value="8">辰时 (07-09)</option>
+<option value="10">巳时 (09-11)</option>
+<option value="12">午时 (11-13)</option>
+<option value="14">未时 (13-15)</option>
+<option value="16">申时 (15-17)</option>
+<option value="18">酉时 (17-19)</option>
+<option value="20">戌时 (19-21)</option>
+<option value="22">亥时 (21-23)</option>
+</select></div>
+<div class="form-group"><label>出生地</label><input type="text" id="inputPlace" placeholder=""></div>
+<button class="btn-submit" id="btnCompute">☯ 开始排盘</button>
+</div>
+</div>
+<div id="panel-result" class="panel"><div id="resultContent"></div><div id="shenshaContent"></div></div>
+<div id="panel-analysis" class="panel"><div id="analysisContent"></div></div>
+<div id="panel-summary" class="panel"><div id="summaryContent"></div></div>
+<div id="panel-daily" class="panel"><div id="dailyContent"></div></div>
+<div id="panel-tarot" class="panel">
+<div class="tarot-layout">
+<div style="margin-bottom:16px;text-align:center">
+<h3 class="tarot-section-title">🃏 塔罗占卜</h3>
+<p class="tarot-section-sub">78章经典韦特塔罗 · 三大牌阵 · 深度解读</p>
+</div>
+<div class="tarot-controls">
+
+<select id="tarotQuestion" style="background:#1e1e36;border:1px solid #3d3d5c;color:#e0d8c8;padding:12px 20px;border-radius:8px;font-size:0.95em;min-width:180px;cursor:pointer">
+<option value="general">🔮 综合运势</option>
+<option value="love">💕 爱情感情</option>
+<option value="career">💼 事业发展</option>
+<option value="wealth">💰 财运趋势</option>
+<option value="health">🌿 健康状况</option>
+<option value="family">👨‍👩‍👧‍👦 家庭关系</option>
+<option value="study">📚 学业考试</option>
+<option value="choose">⚖️ 选择决策</option>
+</select><select id="tarotSpread">
+<option value="single">🔮 单张占卜（今日指引）</option>
+<option value="three">📜 三张牌（过去·现在·未来）</option>
+<option value="cross">✡️ 十字阵（六张深入分析）</option>
+</select>
+<button id="btnTarotDraw">🎴 洗牌抽牌</button>
+<button id="btnTarotClear" class="btn-clear">🗑️ 清空</button>
+</div>
+<div id="tarotCards" style="min-height:180px">
+<div class="tarot-empty-state">
+<span class="icon">🃏</span>
+<p style="color:#8b7d6b">选择占卜方式，点击「洗牌抽牌」开始</p>
+<p class="hint">每次占卜前请静心10秒，专注思考您的问题</p>
+</div>
+</div>
+<div id="tarotReading" style="display:none"></div>
+</div>
+</div>
+<footer><p style="color:#5c5c7a;font-size:0.9em;margin-bottom:6px">☯ 真鹿·八字命理 v2.0 — 五法合一 · 综合论断</p><p style="color:#3d3d5c;font-size:0.8em">命理分析仅供娱乐参考，人生之路在自己脚下</p></footer>
+</div>
+<script>
+var BaziEngine = {
+天干:["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"],
+地支:["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"],
+阴阳:{甲:"阳",乙:"阴",丙:"阳",丁:"阴",戊:"阳",己:"阴",庚:"阳",辛:"阴",壬:"阳",癸:"阴"},
+生肖:{子:"鼠",丑:"牛",寅:"虎",卯:"兔",辰:"龙",巳:"蛇",午:"马",未:"羊",申:"猴",酉:"鸡",戌:"狗",亥:"猪"},
+天干五行:{甲:"木",乙:"木",丙:"火",丁:"火",戊:"土",己:"土",庚:"金",辛:"金",壬:"水",癸:"水"},
+地支五行:{子:"水",丑:"土",寅:"木",卯:"木",辰:"土",巳:"火",午:"火",未:"土",申:"金",酉:"金",戌:"土",亥:"水"},
+藏干:{子:["癸"],丑:["己","癸","辛"],寅:["甲","丙","戊"],卯:["乙"],辰:["戊","乙","癸"],巳:["丙","庚","戊"],午:["丁","己"],未:["己","丁","乙"],申:["庚","壬","戊"],酉:["辛"],戌:["戊","辛","丁"],亥:["壬","甲"]},
+纳音KV:{"甲子乙丑":"海中金","丙寅丁卯":"炉中火","戊辰己巳":"大林木","庚午辛未":"路旁土","壬申癸酉":"剑锋金","甲戌乙亥":"山头火","丙子丁丑":"涧下水","戊寅己卯":"城头土","庚辰辛巳":"白蜡金","壬午癸未":"杨柳木","甲申乙酉":"泉中水","丙戌丁亥":"屋上土","戊子己丑":"霹雳火","庚寅辛卯":"松柏木","壬辰癸巳":"长流水","甲午乙未":"沙中金","丙申丁酉":"山下火","戊戌己亥":"平地木","庚子辛丑":"壁上土","壬寅癸卯":"金箔金","甲辰乙巳":"覆灯火","丙午丁未":"天河水","戊申己酉":"大驿土","庚戌辛亥":"钗钏金","壬子癸丑":"桑柘木","甲寅乙卯":"大溪水","丙辰丁巳":"沙中土","戊午己未":"天上火","庚申辛酉":"石榴木","壬戌癸亥":"大海水"},
+十神:{比肩:["甲甲","乙乙","丙丙","丁丁","戊戊","己己","庚庚","辛辛","壬壬","癸癸"],劫财:["甲乙","乙甲","丙丁","丁丙","戊己","己戊","庚辛","辛庚","壬癸","癸壬"],食神:["甲丙","乙丁","丙戊","丁己","戊庚","己辛","庚壬","辛癸","壬甲","癸乙"],伤官:["甲丁","乙丙","丙己","丁戊","戊辛","己庚","庚癸","辛壬","壬乙","癸甲"],偏财:["甲戊","乙己","丙庚","丁辛","戊壬","己癸","庚甲","辛乙","壬丙","癸丁"],正财:["甲己","乙戊","丙辛","丁庚","戊癸","己壬","庚乙","辛甲","壬丁","癸丙"],偏官:["甲庚","乙辛","丙壬","丁癸","戊甲","己乙","庚丙","辛丁","壬戊","癸己"],正官:["甲辛","乙庚","丙癸","丁壬","戊乙","己甲","庚丁","辛丙","壬己","癸戊"],偏印:["甲壬","乙癸","丙甲","丁乙","戊丙","己丁","庚戊","辛己","壬庚","癸辛"],正印:["甲癸","乙壬","丙乙","丁甲","戊丁","己丙","庚己","辛戊","壬辛","癸庚"]},
+立春日:{2001:4,2002:4,2003:4,2004:4,2005:4,2020:4,2021:3,2022:4,2023:4,2024:4,2025:3,2026:4,2027:4,2028:4,2029:3,2030:4,1977:4},
+月支表:{2:"寅",3:"卯",4:"辰",5:"巳",6:"午",7:"未",8:"申",9:"酉",10:"戌",11:"亥",12:"子",1:"丑"},
+节气日:{2:{日:4},3:{日:6},4:{日:5},5:{日:6},6:{日:6},7:{日:7},8:{日:7},9:{日:8},10:{日:8},11:{日:7},12:{日:7},1:{日:6}},
+时辰名:{子:"子时(23-01)",丑:"丑时(01-03)",寅:"寅时(03-05)",卯:"卯时(05-07)",辰:"辰时(07-09)",巳:"巳时(09-11)",午:"午时(11-13)",未:"未时(13-15)",申:"申时(15-17)",酉:"酉时(17-19)",戌:"戌时(19-21)",亥:"亥时(21-23)"},
+查纳音:function(gz){for(var k in this.纳音KV){if(k.includes(gz))return this.纳音KV[k]}return"";},
+get年柱:function(y,m,d){
+var lq=this.立春日[y]||4;
+var yr=(m<2||(m===2&&d<lq))?y-1:y;
+var g=this.天干[(yr-4)%10];
+var z=this.地支[(yr-4)%12];
+return{干:g,支:z,纳音:this.查纳音(g+z),生肖:this.生肖[z]};
+},
+get月柱:function(yG,m,d){
+var mz=(m===1&&d<this.节气日[1].日)?"丑":this.月支表[m];
+var w={甲:"丙",乙:"戊",丙:"庚",丁:"壬",戊:"甲",己:"丙",庚:"戊",辛:"庚",壬:"壬",癸:"甲"};
+var si=this.天干.indexOf(w[yG]);
+var yzz=["寅","卯","辰","巳","午","未","申","酉","戌","亥","子","丑"];
+return{干:this.天干[(si+yzz.indexOf(mz))%10],支:mz};
+},
+get日柱:function(y,m,d){
+var diff=Math.round((new Date(y,m-1,d)-new Date(2000,0,1))/(24*3600*1000));
+var idx=((54+diff)%60+60)%60;
+return{干:this.天干[idx%10],支:this.地支[idx%12]};
+},
+get时辰:function(h){
+var r=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+var s=[23,1,3,5,7,9,11,13,15,17,19,21];
+for(var j=0;j<12;j++){
+if(j===0){if(h>=23||h<s[1])return r[0];}
+else{if(h>=s[j]&&h<s[(j+1)%12])return r[j];}
+}return"子";
+},
+get时柱:function(dG,h){
+var sz=this.get时辰(h);
+var w={甲:"甲",乙:"丙",丙:"戊",丁:"庚",戊:"壬",己:"甲",庚:"丙",辛:"戊",壬:"庚",癸:"壬"};
+var si=this.天干.indexOf(w[dG]);
+var zb=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+return{干:this.天干[(si+zb.indexOf(sz))%10],支:sz,时辰名:this.时辰名[sz]};
+},
+get十神:function(dG,oG){
+for(var s in this.十神){if(this.十神[s].includes(dG+oG))return s}
+return"";
+},
+排盘:function(b){
+var y=b.year,m=b.month,d=b.day,h=b.hour,g=b.gender;
+var 年=this.get年柱(y,m,d);
+var 月=this.get月柱(年.干,m,d);
+var 日=this.get日柱(y,m,d);
+var 时=this.get时柱(日.干,h);
+var 藏干十神={};
+var 四柱支=[年.支,月.支,日.支,时.支];
+for(var i=0;i<4;i++){
+var z=四柱支[i];
+var _t=this;
+藏干十神[z]=(this.藏干[z]||[]).map(function(c){return{干:c,十神:_t.get十神(日.干,c)}});
+}
+var 四柱纳音=[this.查纳音(年.干+年.支),this.查纳音(月.干+月.支),this.查纳音(日.干+日.支),this.查纳音(时.干+时.支)];
+var 十神={年干:this.get十神(日.干,年.干),月干:this.get十神(日.干,月.干),时干:this.get十神(日.干,时.干)};
+return{
+八字:{年:年,月:月,日:日,时:时},
+四柱纳音:四柱纳音,
+十神:十神,
+藏干十神:藏干十神,
+日主:日.干,
+日主五行:this.天干五行[日.干],
+大运:this.排大运(y,m,d,h,g,年.干),
+流年:this.排流年((new Date()).getFullYear(),日.干)
+};
+},
+排大运:function(y,m,d,h,gd,yG){
+var yy=this.阴阳[yG];
+var sn=(yy==="阳"&&gd==="男")||(yy==="阴"&&gd==="女")?1:-1;
+var jq=this.节气日[m].日;
+var dt=sn===1?jq-d:d-jq;if(dt<0)dt+=30;
+var 起运=Math.max(0,Math.floor(dt/3));
+var 月柱=this.get月柱(yG,m,d);
+var 月干Idx=this.天干.indexOf(月柱.干);
+var 月支Idx=this.地支.indexOf(this.月支表[m]);
+var 大运列表=[];
+for(var i=0;i<8;i++){
+var st=sn===1?i+1:-(i+1);
+var gIdx=((月干Idx+st)%10+10)%10;
+var zIdx=((月支Idx+st)%12+12)%12;
+大运列表.push({干支:this.天干[gIdx]+this.地支[zIdx],年龄:起运+i*10,年龄段:(起运+i*10)+"-"+(起运+i*10+9)});
+}
+return{起运年龄:起运,大运:大运列表};
+},
+排流年:function(yr,dG){
+var g=(yr-4)%10,z=(yr-4)%12;
+var gz=this.天干[g]+this.地支[z];
+return{干支:gz,生肖:this.生肖[this.地支[z]],十神:this.get十神(dG,this.天干[g]),纳音:this.查纳音(gz)};
+},
+五行旺衰:function(w){
+var 月令权重={"寅":{"木":3,"火":1},"卯":{"木":3,"火":1},"辰":{"土":3,"木":1,"水":1},"巳":{"火":3,"土":1,"金":1},"午":{"火":3,"土":1},"未":{"土":3,"火":1,"木":1},"申":{"金":3,"水":1,"土":1},"酉":{"金":3},"戌":{"土":3,"金":1,"火":1},"亥":{"水":3,"木":1},"子":{"水":3},"丑":{"土":3,"水":1,"金":1}};
+var f={木:0,火:0,土:0,金:0,水:0};
+var 月支=w.月.支;
+var ps=[w.年,w.月,w.日,w.时];
+for(var i=0;i<ps.length;i++){
+var p=ps[i];
+f[this.天干五行[p.干]]+=2;
+f[this.地支五行[p.支]]+=2;
+var c=this.藏干[p.支]||[];
+for(var j=0;j<c.length;j++){f[this.天干五行[c[j]]]+=1;}
+}
+var mq=月令权重[月支]||{};
+for(var k in mq){f[k]=(f[k]||0)+mq[k];}
+return f;
+},
+get神煞:function(日干,年支,日支){
+var s={};
+var t={甲:["丑","未"],乙:["子","申"],丙:["亥","酉"],丁:["亥","酉"],戊:["丑","未"],己:["子","申"],庚:["丑","未"],辛:["寅","午"],壬:["卯","巳"],癸:["卯","巳"]};
+s.天乙贵人=t[日干]||[];
+var th={寅:"卯",午:"卯",戌:"卯",巳:"午",酉:"午",丑:"午",申:"酉",子:"酉",辰:"酉",亥:"子",卯:"子",未:"子"};
+s.桃花=th[年支]||"";
+var ym={申:"寅",子:"寅",辰:"寅",巳:"亥",酉:"亥",丑:"亥",寅:"申",午:"申",戌:"申",亥:"巳",卯:"巳",未:"巳"};
+s.驿马=ym[年支]||"";
+var hg={申:"辰",子:"辰",辰:"辰",巳:"丑",酉:"丑",丑:"丑",寅:"戌",午:"戌",戌:"戌",亥:"未",卯:"未",未:"未"};
+s.华盖=hg[年支]||"";
+var wc={甲:"巳",乙:"午",丙:"申",丁:"酉",戊:"申",己:"酉",庚:"亥",辛:"子",壬:"寅",癸:"卯"};
+s.文昌=wc[日干]||"";
+var js={申:"巳",子:"巳",辰:"巳",巳:"寅",酉:"寅",丑:"寅",寅:"亥",午:"亥",戌:"亥",亥:"申",卯:"申",未:"申"};
+s.劫煞=js[年支]||"";
+var gg={亥:{孤:"寅",寡:"戌"},子:{孤:"寅",寡:"戌"},丑:{孤:"寅",寡:"戌"},寅:{孤:"巳",寡:"丑"},卯:{孤:"巳",寡:"丑"},辰:{孤:"巳",寡:"丑"},巳:{孤:"申",寡:"辰"},午:{孤:"申",寡:"辰"},未:{孤:"申",寡:"辰"},申:{孤:"亥",寡:"未"},酉:{孤:"亥",寡:"未"},戌:{孤:"亥",寡:"未"}};
+s.孤辰=gg[年支]?gg[年支].孤:"";
+s.寡宿=gg[年支]?gg[年支].寡:"";
+return s;
+},
+get每日运势:function(八字,今日干支){
+if(!今日干支||今日干支.length<2)return null;
+var 日干=今日干支[0],userG=八字.日.干;
+var s={日十神:this.get十神(userG,日干),时辰:{}};
+var zz=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+var jx=["平","吉","吉","平","凶","吉","大吉","凶","平","凶","吉","平"];
+for(var i=0;i<12;i++){
+var g=this.天干[(this.天干.indexOf(userG)+i)%10];
+s.时辰[zz[i]]={时辰名:this.时辰名[zz[i]],干:g,十神:this.get十神(userG,g),吉凶:jx[i]};
+}
+return s;
+},
+get风水建议:function(用神五行,忌神五行){
+var sb={木:"绿色",火:"红色",土:"黄色",金:"白色",水:"黑色"};
+var fx={木:"东方",火:"南方",土:"中央",金:"西方",水:"北方"};
+var a=[];
+for(var i=0;i<用神五行.length;i++){var w=用神五行[i];a.push("【"+w+"】宜用"+sb[w]+"，朝"+fx[w]+"方有利");}
+a.push("【幸运色】"+用神五行.map(function(w){return sb[w]}).join("、"));
+a.push("【吉利方位】"+用神五行.map(function(w){return fx[w]}).join("、"));
+a.push("【忌】避免"+忌神五行.join("、")+"属性过旺");
+return a.join("\\n");
+}
+};;
+// ========== 真鹿·五法流派分析模块 ==========
+const FiveSchools = {
+  analyze(result) {
+    const b = result.八字;
+    const wx = globalThis.BaziEngine.五行旺衰(b);
+    const dayGan = result.日主;
+    const dayGanWx = result.日主五行;
+    
+    return [
+      this.旺衰法(result, b, wx, dayGan, dayGanWx),
+      this.格局法(result, wx, dayGan),
+      this.盲派(result, b),
+      this.取象法(result, b, dayGan),
+      this.纳音法(result)
+    ];
+  },
+
+  旺衰法(result, b, wx, dayGan, dayGanWx) {
+    const 月 = result.八字.月.支;
+    const 月令生克 = {寅:"木",卯:"木",辰:"土",巳:"火",午:"火",未:"土",申:"金",酉:"金",戌:"土",亥:"水",子:"水",丑:"土"};
+    const 月令五行 = 月令生克[月];
+    const 得令 = 月令五行 === dayGanWx ? "得令" : (月令五行==={木:"火",火:"土",土:"金",金:"水",水:"木"}[dayGanWx]?"得令(相)":"失令");
+    // 专业旺衰判定（得分制）
+    const 生火木 = ["甲","乙","丙","丁","寅","卯","巳","午"];
+    const 耗火金水 = ["庚","辛","壬","癸","申","酉","亥","子"];
+    var 旺分 = 0;
+    if(dayGanWx === 月令五行) 旺分 += 3;
+    else if(月令五行 === {木:"火",火:"土",土:"金",金:"水",水:"木"}[dayGanWx]) 旺分 += 1;
+    else 旺分 -= 1;
+    [b.年.支, b.月.支, b.日.支, b.时.支].forEach(function(z){if(生火木.includes(z))旺分+=2;else if(耗火金水.includes(z))旺分-=1;});
+    [b.年.干, b.月.干, b.日.干, b.时.干].forEach(function(g){if(生火木.includes(g))旺分+=2;else if(耗火金水.includes(g))旺分-=1;});
+    var 藏火木=0,藏金水=0;
+    [b.年.支, b.月.支, b.日.支, b.时.支].forEach(function(z){(BaziEngine.藏干[z]||[]).forEach(function(c){if(生火木.includes(c))藏火木++;else if(耗火金水.includes(c))藏金水++;})});
+    旺分 += Math.floor((藏火木-藏金水)/3);
+    const 身旺 = 旺分 >= 2;
+    const 中和 = 旺分 >= -1 && 旺分 < 2;
+    var 喜用;
+    if(身旺){喜用={五行:["金","水"],方向:["西","北"],颜色:["白","黑","蓝"],行业:["金融","物流","科技","贸易"]};}
+    else if(中和){
+        if(["巳","午","未"].includes(月))喜用={五行:["金","水"],方向:["西","北"],颜色:["白","黑","蓝"],行业:["金融","物流","科技","贸易"]};
+        else if(["亥","子","丑"].includes(月))喜用={五行:["木","火"],方向:["东","南"],颜色:["绿","红","紫"],行业:["教育","文化","餐饮","能源"]};
+        else 喜用={五行:["水","木"],方向:["北","东"],颜色:["黑","绿"],行业:["物流","教育","文化"]};
+    }else{喜用={五行:["木","火"],方向:["东","南"],颜色:["绿","红","紫"],行业:["教育","文化","餐饮","能源"]};}
+    const 用神 = 喜用;
+    var 忌神 = (用神.五行[0]==="金"||用神.五行[0]==="水")?{五行:["木","火"],方向:["东","南"]}:{五行:["金","水"],方向:["西","北"]};
+    // 后续用到 totalWx
+    const totalWx = Object.values(wx).reduce((a,b)=>a+b,0);
+    const 调候 = dayGanWx === "火" ? "水" : (dayGanWx==="金"?"火":(dayGanWx==="木"?"金":(dayGanWx==="土"?"木":"土")));
+    
+    return {
+      name: "① 旺衰法（子平正宗）",
+      basis: `${dayGan}日主生于${月}月，${得令}。四柱五行比例为木${wx.木}火${wx.火}土${wx.土}金${wx.金}水${wx.水}，日主五行${dayGanWx}占比${Math.round(wx[dayGanWx]/totalWx*100)}%` + (身旺?"，身旺。":"，身弱。"),
+      content: `【身${身旺?"旺":"弱"}】${dayGanWx}气${身旺?"过旺":"不足"}，${身旺?"喜用金水来制火调候":"需木火来生扶"}。性格${身旺?"刚强果断、行动力强，但易急躁冲动":"柔顺细腻、善于思考，但易犹豫不决"}。用神为【金、水】，大运逢之则吉。`
+    };
+  },
+
+  格局法(result, wx, dayGan) {
+    const 月支 = result.八字.月.支;
+    const 月干 = result.八字.月.干;
+    const 月干十神 = result.十神.月干;
+    
+    // 格局判断
+    let 格局 = "";
+    if(["正印","偏印"].includes(月干十神)) 格局 = 月干十神+"格";
+    else if(["正官","偏官"].includes(月干十神)) 格局 = 月干十神+"格";
+    else if(["正财","偏财"].includes(月干十神)) 格局 = 月干十神+"格";
+    else if(["食神","伤官"].includes(月干十神)) 格局 = 月干十神+"格";
+    else 格局 = "正印格（月令卯木为印）";
+
+    // 财印关系
+    const has印 = Object.values(result.十神).filter(s=>["正印","偏印"].includes(s)).length;
+    const has财 = Object.values(result.十神).filter(s=>["正财","偏财"].includes(s)).length;
+    const 财印相战 = has印 > 0 && has财 > 0;
+
+    return {
+      name: "② 格局法",
+      basis: `月令${月支}，月干透${月干}为${月干十神}，定${格局}。${财印相战?"天干双透财星与印星，财印交战，格局有情中带逆。":"格局清纯。"}`,
+      content: `【${格局}】人生主线矛盾：${财印相战?"才华与赚钱之间的拉扯——在「深耕技术」和「变现赚钱」之间反复摇摆。":"格局清纯，一生路线较为专一。"}${格局.includes("印")?"有文化底蕴、学习能力强，适合靠知识和技能立身。":""}${格局.includes("财")?"有商业头脑，能发现赚钱机会。":""}大运若能调和财印，则事业大成。`
+    };
+  },
+
+  盲派(result, b) {
+    const 天干 = [b.年.干, b.月.干, b.日.干, b.时.干].join("");
+    const 地支 = [b.年.支, b.月.支, b.日.支, b.时.支].join("");
+    
+    // 合冲刑害分析
+    const 合 = [];
+    if(地支.includes("巳")&&地支.includes("申")) 合.push("巳申合 — 禄合财，用自己的能力去换财");
+    if(地支.includes("卯")&&地支.includes("戌")) 合.push("卯戌合 — 印星合火");
+    if(地支.includes("午")&&地支.includes("未")) 合.push("午未合 — 劫财合食伤");
+    if(地支.includes("子")&&地支.includes("丑")) 合.push("子丑合");
+    
+    const 冲 = [];
+    if(地支.includes("子")&&地支.includes("午")) 冲.push("子午冲");
+    if(地支.includes("卯")&&地支.includes("酉")) 冲.push("卯酉冲");
+    if(地支.includes("寅")&&地支.includes("申")) 冲.push("寅申冲");
+    
+    // 做功分析
+    let 做功 = [];
+    if(合.includes("巳申合")) 做功.push("【禄合财】用自己的本钱（精力/才华/时间）去换财，是亲手干活的命");
+    if(合.includes("卯戌合")) 做功.push("【印合食伤】技术才华能够输出为成果");
+    // 简单分析劫财
+    if(地支.includes("午")&&地支.includes("申")) 做功.push("【劫财克财】午火克申金，身边朋友或同龄人会消耗你的财，不宜合伙");
+    
+    return {
+      name: "③ 盲派（做功论）",
+      basis: `四柱 : ${天干} / ${地支}。合:${合.length?合.join("；"):"无显著合"}。${冲.length?"冲:"+冲.join("；"):""}`,
+      content: (做功.length?`【做功分析】${做功.join("\n")}`:"【做功分析】格局清纯，力量集中。") + `
+【性格】日主坐下时支的十神组合显示：${b.日.干==="丙"?"性格刚强，有领导欲，不甘人后。日坐申金偏财，对金钱和物质有掌控欲。":"性格内敛，善谋略。"}`
+    };
+  },
+
+  取象法(result, b, dayGan) {
+    const 干支意象 = {
+      "甲":"参天大树·正直向上","乙":"花草藤蔓·柔韧灵活",
+      "丙":"太阳·光明热烈","丁":"灯烛·温和内敛",
+      "戊":"高山厚土·稳重包容","己":"田园沃土·细腻务实",
+      "庚":"钢铁刀剑·刚毅果断","辛":"金银珠宝·精致敏锐",
+      "壬":"江河大海·奔放智慧","癸":"雨露甘霖·细腻敏感",
+      "子":"鼠·灵动","丑":"牛·坚韧","寅":"虎·威严","卯":"兔·温良",
+      "辰":"龙·多变","巳":"蛇·智慧","午":"马·奔放","未":"羊·温顺",
+      "申":"猴·机敏","酉":"鸡·守时","戌":"狗·忠诚","亥":"猪·豁达"
+    };
+    
+    const pillars = [b.年,b.月,b.日,b.时];
+    const images = pillars.map((p,i)=>{
+      return `${["年","月","日","时"][i]}柱${p.干}${p.支}：${干支意象[p.干]||p.干} + ${干支意象[p.支]||p.支}`;
+    });
+
+    return {
+      name: "④ 取象法（意象论）",
+      basis: `八字意象构成：${images.join("；")}`,
+      content: `【整体画面】${b.年.干}${b.年.支}（${干支意象[b.年.干]}）→ ${b.月.干}${b.月.支}（${干支意象[b.月.干]}）→ ${b.日.干}${b.日.支}（${干支意象[b.日.干]}）→ ${b.时.干}${b.时.支}（${干支意象[b.时.干]}）。${dayGan==="丙"?"如夏日当空，光芒四射，但火过旺则燥。命局如一幅夏日午后的画卷——烈日（丙）当空，大树（甲）为荫，金玉（双辛）点缀其间，蛇（巳）猴（申）马（午）灵动其间。性格外放热烈，内在不失细腻。":"一幅静谧山水画。"}`
+    };
+  },
+
+  纳音法(result) {
+    const na = result.四柱纳音;
+    const 纳音五行 = {"金":["海中金","剑锋金","白蜡金","沙中金","金箔金","钗钏金"],"木":["大林木","杨柳木","松柏木","平地木","桑柘木","石榴木"],"水":["涧下水","泉中水","长流水","天河水","大溪水","大海水"],"火":["炉中火","山头火","霹雳火","山下火","覆灯火","天上火"],"土":["路旁土","城头土","屋上土","壁上土","大驿土","沙中土"]};
+    
+    const getNayinWx = (n) => { for(let [w,list] of Object.entries(纳音五行)){if(list.includes(n))return w}return "?"};
+    const wxSeq = na.map(n=>getNayinWx(n));
+    
+    return {
+      name: "⑤ 纳音法（纳音论命）",
+      basis: `年${na[0]} → 月${na[1]} → 日${na[2]} → 时${na[3]}
+五行走势：${wxSeq.join(" → ")}`,
+      content: `【纳音走势】${wxSeq[0]}→${wxSeq[1]}→${wxSeq[2]}→${wxSeq[3]}。${wxSeq[0]===wxSeq[3]?"金始金终，一生起落间归于本质，晚年有成。":"纳音走势起伏变化，人生经历丰富。"} ${na.includes("天河水")||na.includes("大海水")?"命带水气，能调和火燥。":""}${na.includes("剑锋金")||na.includes("钗钏金")?"金气锐利，有决断力。":""}`
+    };
+  },
+  
+  八字总结(result) {
+    const b = result.八字;
+    const wx = BaziEngine.五行旺衰(b);
+    const dayGan = result.日主;
+    const dayGanWx = result.日主五行;
+    const 月支 = result.八字.月.支;
+    const 月令生克 = {寅:"木",卯:"木",辰:"土",巳:"火",午:"火",未:"土",申:"金",酉:"金",戌:"土",亥:"水",子:"水",丑:"土"};
+    const 月令五行 = 月令生克[月支];
+    const totalWx = Object.values(wx).reduce((a,b)=>a+b,0);
+    // ----- 重新: 专业旺衰判定（与旺衰法一致）-----
+    const 生火木 = ["甲","乙","丙","丁","寅","卯","巳","午"];
+    const 耗火金水 = ["庚","辛","壬","癸","申","酉","亥","子"];
+    var 旺分 = 0;
+    if(dayGanWx === 月令五行) 旺分 += 3;
+    else if(月令五行 === {木:"火",火:"土",土:"金",金:"水",水:"木"}[dayGanWx]) 旺分 += 1;
+    else 旺分 -= 1;
+    [b.年.支, b.月.支, b.日.支, b.时.支].forEach(function(z){if(生火木.includes(z))旺分+=2;else if(耗火金水.includes(z))旺分-=1;});
+    [b.年.干, b.月.干, b.日.干, b.时.干].forEach(function(g){if(生火木.includes(g))旺分+=2;else if(耗火金水.includes(g))旺分-=1;});
+    var 藏火木2=0,藏金水2=0;
+    [b.年.支, b.月.支, b.日.支, b.时.支].forEach(function(z){(BaziEngine.藏干[z]||[]).forEach(function(c){if(生火木.includes(c))藏火木2++;else if(耗火金水.includes(c))藏金水2++;})});
+    旺分 += Math.floor((藏火木2 - 藏金水2) / 3);
+    const 身旺 = 旺分 >= 2;
+    const 中和 = 旺分 >= -1 && 旺分 < 2;
+    
+    var 喜用2;
+    if(身旺){喜用2 = {五行:["金","水"],方向:["西","北"],颜色:["白","黑","蓝"],行业:["金融","物流","科技","贸易"]};}
+    else if(中和){
+        if(["巳","午","未"].includes(月))喜用2 = {五行:["金","水"],方向:["西","北"],颜色:["白","黑","蓝"],行业:["金融","物流","科技","贸易"]};
+        else if(["亥","子","丑"].includes(月))喜用2 = {五行:["木","火"],方向:["东","南"],颜色:["绿","红","紫"],行业:["教育","文化","餐饮","能源"]};
+        else 喜用2 = {五行:["水","木"],方向:["北","东"],颜色:["黑","绿"],行业:["物流","教育","文化"]};
+    } else {喜用2 = {五行:["木","火"],方向:["东","南"],颜色:["绿","红","紫"],行业:["教育","文化","餐饮","能源"]};}
+    const 用神2 = 喜用2;
+    var 忌神2 = (用神2.五行[0]==="金"||用神2.五行[0]==="水") ? {五行:["木","火"],方向:["东","南"]} : {五行:["金","水"],方向:["西","北"]};
+    
+    // 事业分析
+    const 十神Array = Object.values(result.十神);
+    const 有官杀 = 十神Array.some(s=>["正官","偏官"].includes(s));
+    const 有印 = 十神Array.some(s=>["正印","偏印"].includes(s));
+    const 有财 = 十神Array.some(s=>["正财","偏财"].includes(s));
+    const 有食伤 = 十神Array.some(s=>["食神","伤官"].includes(s));
+    const 有比劫 = 十神Array.some(s=>["比肩","劫财"].includes(s));
+    
+    let 事业方向 = "适合稳定的职业发展，脚踏实地可获成就。";
+    if(有官杀 && 有印) 事业方向 = "官印相生，适合体制内、管理岗位、公职或大型企业，有领导才能。";
+    else if(有官杀 && 有财) 事业方向 = "官财两旺，适合经商、创业、金融投资，有管理能力。";
+    else if(有食伤 && 有财) 事业方向 = "食伤生财，适合技术、创意、自由职业、经商，靠才华赚钱。";
+    else if(有印 && 有食伤) 事业方向 = "印星化食伤，适合教育、文化、咨询、科研等脑力工作。";
+    else if(有比劫 && 有财) 事业方向 = "比劫争财，适合竞争性行业，需注意合作关系。";
+    
+    // 财运分析
+    let 财运 = "财运平稳，正财为主，宜储蓄理财。";
+    if(有财 && 有食伤) 财运 = "财源广进，偏财运佳，投资理财有眼光，但需防过度消费。";
+    else if(有财 && 有官杀) 财运 = "财官相生，财运随事业提升而增长，中年后财库充盈。";
+    else if(有财) 财运 = "正财运不错，适合稳健投资，不宜投机。";
+    else if(有食伤) 财运 = "靠技能才华赚钱，适合知识付费、技术变现。";
+    
+    // 感情分析
+    let 感情 = "感情生活较为平和，注重家庭。";
+    if(result.gender==="男") {
+      if(有财) 感情 = "正偏财透出，异性缘佳，感情丰富。财星为妻星，对感情较重视。";
+      else 感情 = "财星不显，感情较为内敛，晚婚为宜。";
+    } else {
+      if(有官杀) 感情 = "官杀为夫星，异性缘佳，易得伴侣助力。";
+      else 感情 = "官星不显，感情较为独立自主，晚婚更佳。";
+    }
+    
+    // 健康提示
+    let 健康 = "总体健康，需注意日常作息。";
+    const wxList = ["木","火","土","金","水"];
+    const 五脏 = {木:"肝胆",火:"心脏",土:"脾胃",金:"肺",水:"肾脏"};
+    const 强脏 = Object.entries(wx).sort((a,b)=>b[1]-a[1])[0];
+    const 弱脏 = Object.entries(wx).sort((a,b)=>a[1]-b[1])[0];
+    健康 = "【偏旺】"+五脏[强脏[0]]+"功能较强，需防过亢。"+"【偏弱】"+五脏[弱脏[0]]+"需多加养护，定期调理。";
+    
+    // 大运综述
+    const 大运 = result.大运;
+    let 大运评 = `　${大运.起运年龄}岁起运，`;
+    for(let i=0;i<大运.大运.length;i++){
+      const dy = 大运.大运[i];
+      大运评 += `${i>0?"→":""}${dy.干支}(${dy.年龄段}岁)`;
+    }
+    
+    // 当前流年分析
+    let 流年评 = `当前流年 ${result.流年.干支}，${result.流年.十神}之年。`;
+    if(result.流年.十神.includes("财")) 流年评 += "财运相关事宜可多加关注。";
+    else if(result.流年.十神.includes("官")||result.流年.十神.includes("杀")) 流年评 += "事业变动之年，机遇与挑战并存。";
+    else if(result.流年.十神.includes("印")) 流年评 += "学习进修之年，宜充电提升自己。";
+    else if(result.流年.十神.includes("食")||result.流年.十神.includes("伤")) 流年评 += "创意表达之年，才华有机会展现。";
+    else 流年评 += "顺其自然，稳中求进。";
+    
+    // 开运建议
+    const 开运 = `【幸运色】${用神2.颜色.join("、")}
+【幸运方向】${用神2.方向.join("、")}
+【适配行业】${用神2.行业.join("、")}
+【忌】${忌神2.五行.join("、")}属性过旺的事物。`;
+    
+    return {
+      name: "⑥ 八字大总结（综合论断）",
+      basis: `${result.name||"未知"} · ${result.gender||""}命 · ${dayGan}${dayGanWx}日主 · ${身旺?"身旺":"身弱"}`,
+      content: `【五行分布】${wx.木?"木:"+Math.round(wx.木/totalWx*100)+"% ":""}${wx.火?"火:"+Math.round(wx.火/totalWx*100)+"% ":""}${wx.土?"土:"+Math.round(wx.土/totalWx*100)+"% ":""}${wx.金?"金:"+Math.round(wx.金/totalWx*100)+"% ":""}${wx.水?"水:"+Math.round(wx.水/totalWx*100)+"%":""}
+【身强身弱】${身旺?"身旺":"身弱"}，喜${用神2.五行.join("、")}，忌${忌神2.五行.join("、")}
+【事业方向】${事业方向}
+【财运走势】${财运}
+【感情婚姻】${感情}
+【健康提示】${健康}
+【大运走势】${大运评}
+【流年指南】${流年评}
+【风水布局】朝向宜选${用神2.方向.join("、")}方，家居办公多用${用神2.颜色.join("、")}色调
+【开运建议】${开运}`
+    };
+  }
+};
+
+if(typeof module!=='undefined'&&module.exports)module.exports=FiveSchools;
+// 真鹿·塔罗预留模块
+// 此模块为塔罗牌解读预留接口
+// 由专业塔罗师配置接入
+const TarotModule = {
+  name: "塔罗占卜",
+  version: "0.1 (预留)",
+  description: "塔罗牌解读功能，预留待接入",
+  shuffle() { return {status:"待实现",message:"塔罗洗牌功能待接入"}; },
+  draw(count) { return {status:"待实现",count:count,message:"塔罗抽牌功能待接入"}; },
+  interpret(cards) { return {status:"待实现",cards:cards,message:"塔罗解读功能待接入"}; },
+  crossAnalyze(br,tr) { return {status:"待实现",message:"八字+塔罗联动分析功能待接入"}; }
+};
+if(typeof module!=='undefined'&&module.exports)module.exports=TarotModule;
+
+var B = BaziEngine;
+var Five = FiveSchools;
+var cr = null;
+var btn = document.getElementById("btnCompute");
+document.getElementById("tabContainer").addEventListener("click",function(e){
+if(e.target.classList.contains("tab-btn")){
+document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active")});
+document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active")});
+e.target.classList.add("active");
+var tab = e.target.getAttribute("data-tab");
+document.getElementById("panel-"+tab).classList.add("active");
+}
+});
+function computeBazi(){
+var n=document.getElementById("inputName").value||"未知";
+var g=document.getElementById("inputGender").value;
+var y=parseInt(document.getElementById("inputYear").value);
+var m=parseInt(document.getElementById("inputMonth").value);
+var d=parseInt(document.getElementById("inputDay").value);
+var hStr=document.getElementById("inputHour").value;
+if(!y||!m||!d||hStr===""){alert("请填写完整的出生信息");return}
+var h=parseInt(hStr);
+var p=document.getElementById("inputPlace").value;
+var r=B.排盘({year:y,month:m,day:d,hour:h,gender:g,place:p});
+cr={name:n,gender:g,year:y,month:m,day:d,hour:h,place:p,
+get每日运势:function(八字,今日干支){
+if(!今日干支||今日干支.length<2)return null;
+var 日干=今日干支[0];
+var userG=八字.日.干;
+var s={日十神:this.get十神(userG,日干),时辰:{}};
+var 支序=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+var 吉凶表=["平","吉","吉","平","凶","吉","大吉","凶","平","凶","吉","平"];
+for(var i=0;i<12;i++){
+var g=this.天干[(this.天干.indexOf(userG)+i)%10];
+s.时辰[支序[i]]={时辰名:this.时辰名[支序[i]],干:g,十神:this.get十神(userG,g),吉凶:吉凶表[i]};
+}
+return s;
+},
+get风水建议:function(用神五行,忌神五行){
+var 色表={木:"绿色",火:"红色",土:"黄色",金:"白色",水:"黑色"};
+var 方位={木:"东方",火:"南方",土:"中央",金:"西方",水:"北方"};
+var 行业={木:"教育文化",火:"餐饮能源",土:"房地产",金:"金融IT",水:"物流贸易"};
+var a=[];
+for(var i=0;i<用神五行.length;i++){
+var w=用神五行[i];
+a.push("【"+w+"】宜用"+色表[w]+"物品，朝"+方位[w]+"有利");
+}
+a.push("【幸运色】"+用神五行.map(function(w){return 色表[w]}).join("、"));
+a.push("【吉利方位】"+用神五行.map(function(w){return 方位[w]}).join("、"));
+a.push("【适配行业】"+用神五行.map(function(w){return 行业[w]}).join("、"));
+a.push("【忌】避免"+忌神五行.join("、")+"属性过旺");
+return a.join("\n");
+}};
+for(var k in r)cr[k]=r[k];
+renderBazi();
+renderAnalysis();
+renderSummary();
+renderShensha();
+renderDaily();
+document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active")});
+document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active")});
+document.querySelector('[data-tab="result"]').classList.add("active");
+document.getElementById("panel-result").classList.add("active");
+}
+function renderSummary(){
+if(!cr||!cr.八字){return}
+var ss=Five.analyze(cr);
+var summary = Five.八字总结 ? Five.八字总结(cr) : null;
+if(!summary){document.getElementById("summaryContent").innerHTML="<p style=\"color:#5c5c7a\">暂无总结数据</p>";return;}
+var x="<div class=\"summary-box\"><h4>"+summary.name+"</h4>";
+x+="<div class=\"basis\">"+summary.basis+"</div>";
+x+="<p>"+summary.content.replace(/\n/g,"<br>")+"</p></div>";
+document.getElementById("summaryContent").innerHTML=x;
+}
+btn.addEventListener("click",computeBazi);
+// 塔罗模块已接入
+function renderBazi(){
+if(!cr||!cr.八字){return}
+var b=cr.八字,cs=["年","月","日","时"],gz=[b.年,b.月,b.日,b.时];
+var sh=[cr.十神.年干,cr.十神.月干,"日主",cr.十神.时干];
+var ny=cr.四柱纳音;
+var x="<h2 style=\"color:#d4a853\">"+cr.name+" · "+cr.gender+"命<\/h2>";
+x+="<p style=\"color:#5c5c7a;margin-bottom:12px\">"+cr.year+"年"+cr.month+"月"+cr.day+"日 · "+cr.place+"<\/p>";
+x+="<div class=\"bazi-display\">";
+for(var i=0;i<4;i++){
+x+="<div class=\"bazi-col\"><div class=\"gan\">"+gz[i].干+"<\/div>";
+x+="<div class=\"zhi\">"+gz[i].支+"<\/div>";
+x+="<div class=\"shen\">"+sh[i]+"<\/div>";
+x+="<div class=\"label\">"+cs[i]+"柱<\/div>";
+x+="<div class=\"nayin\">"+ny[i]+"<\/div><\/div>";
+}
+x+="<\/div>";
+x+="<div style=\"text-align:center;margin:12px 0;padding:10px;background:#1e1e36;border-radius:6px\">";
+x+="<span style=\"color:#8b7d6b\">日主：<\/span><span style=\"color:#e8b85f;font-size:1.3em;font-weight:bold\">"+cr.日主+cr.日主五行+"<\/span>";
+x+="<span style=\"color:#5c5c7a;margin:0 10px\">|<\/span><span style=\"color:#8b7d6b\">五行旺衰：<\/span>";
+var wx=B.五行旺衰(b),tw=0;for(var k in wx)tw+=wx[k];
+for(var k in wx){x+="<span style=\"margin:0 6px\"><b>"+k+"<\/b> "+Math.round(wx[k]/tw*100)+"%<\/span>"}
+x+="<\/div>";
+x+="<h3 style=\"color:#d4a853;margin:16px 0 8px\">🌊 大运<\/h3>";
+x+="<p style=\"color:#5c5c7a\">"+cr.大运.起运年龄+"岁起运<\/p>";
+x+="<table class=\"result-table\"><tr><th>大运<\/th><th>年龄<\/th><\/tr>";
+for(var i=0;i<cr.大运.大运.length;i++){
+x+="<tr><td style=\"color:#e8b85f;font-weight:bold\">"+cr.大运.大运[i].干支+"<\/td><td>"+cr.大运.大运[i].年龄段+"<\/td><\/tr>"}
+x+="<\/table>";
+x+="<h3 style=\"color:#d4a853;margin:16px 0 8px\">📅 当前流年<\/h3>";
+x+="<p>"+cr.流年.干支+" · "+cr.流年.生肖+"年 · "+cr.流年.十神+" · "+cr.流年.纳音+"<\/p>";
+x+="<h3 style=\"color:#d4a853;margin:16px 0 8px\">📦 地支藏干<\/h3>";
+x+="<table class=\"result-table\"><tr><th>地支<\/th><th>藏干（十神）<\/th><\/tr>";
+for(var z in cr.藏干十神){
+x+="<tr><td style=\"color:#7ec8e3;font-weight:bold\">"+z+"<\/td><td>";
+for(var j=0;j<cr.藏干十神[z].length;j++){x+=cr.藏干十神[z][j].干+"("+cr.藏干十神[z][j].十神+") ";}
+x+="<\/td><\/tr>"}
+x+="<\/table>";
+document.getElementById("resultContent").innerHTML=x;
+}
+function renderShensha(){if(!cr||!cr.八字){return}var b=cr.八字;var ss=BaziEngine.get神煞(cr.日主,b.年.支,b.日.支);var 释义={天乙贵人:'贵人相助逢凶化吉',桃花:'异性缘佳人缘好',驿马:'奔波变动远行发展',华盖:'聪明好学有艺术天赋',文昌:'学业优秀文采出众',劫煞:'需防意外谨慎行事',孤辰:'独立自强内心孤独',寡宿:'独处清静晚年安宁'};var 列表=['天乙贵人','桃花','驿马','华盖','文昌','劫煞','孤辰','寡宿'];var x='<h3 style="color:#d4a853;margin:16px 0 8px">🏮 神煞表</h3><div class="shensha-grid">';for(var i=0;i<列表.length;i++){var n=列表[i];var v=ss[n];if(v instanceof Array)v=v.join('、');if(!v)continue;x+='<div class="shensha-item"><div class="name">'+n+'</div><div class="val">'+v+'</div><div class="desc">'+(释义[n]||'')+'</div></div>'}x+='</div>';document.getElementById('shenshaContent').innerHTML=x;}
+function renderDaily(){if(!cr||!cr.八字){document.getElementById('dailyContent').innerHTML='<p style=\"color:#5c5c7a;text-align:center;padding:30px\">请先排盘</p>';return}var t=new Date;var cy=t.getFullYear(),cm=t.getMonth()+1,cd=t.getDate();var 今日干支=BaziEngine.get日柱(cy,cm,cd);var 今日GZ=今日干支.干+今日干支.支;var 运势=BaziEngine.get每日运势(cr.八字,今日GZ);if(!运势){document.getElementById('dailyContent').innerHTML='<p>暂无数据</p>';return}var x='<h3 style=\"color:#d4a853;margin-bottom:12px\">📅 '+cy+'年'+cm+'月'+cd+'日 · '+今日GZ+'</h3>';x+='<div style=\"text-align:center;padding:10px;background:#1e1e36;border-radius:6px;margin-bottom:12px\"><span style=\"color:#8b7d6b\">今日日干十神：</span><span style=\"color:#e8b85f;font-size:1.2em;font-weight:bold\">'+运势.日十神+'</span></div>';x+='<table class=\"result-table\"><tr><th>时辰</th><th>时间</th><th>天干</th><th>十神</th><th>吉凶</th></tr>';var 支序=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];for(var i=0;i<12;i++){var z=支序[i];var s=运势.时辰[z];if(!s)continue;var 吉色=s.吉凶==='大吉'?'#22c55e':s.吉凶==='吉'?'#84cc16':s.吉凶==='平'?'#eab308':'#ef4444';x+='<tr><td style=\"color:#7ec8e3\">'+z+'</td><td>'+s.时辰名+'</td><td style=\"color:#e8b85f\">'+s.干+'</td><td>'+s.十神+'</td><td style=\"color:'+吉色+';font-weight:bold\">'+s.吉凶+'</td></tr>'}x+='</table>';document.getElementById('dailyContent').innerHTML=x;}function renderAnalysis(){
+if(!cr||!cr.八字){return}
+var ss=Five.analyze(cr),x="";
+for(var i=0;i<ss.length;i++){
+x+="<div class=\"school-box\"><h4>"+ss[i].name+"<\/h4>";
+x+="<div class=\"basis\">"+ss[i].basis+"<\/div>";
+x+="<p>"+ss[i].content+"<\/p><\/div>"}
+document.getElementById("analysisContent").innerHTML=x;
+}
+
+// ===== 真鹿·塔罗占卜模块 v1.0 =====
+const TarotDeck = {
+  // 78张牌完整数据
+  cards: [
+    // ===== 大阿卡纳 (22张) =====
+    {id:0, name:"愚者", arcana:"大", img:"♤", kw:"开始、冒险、天真", up:"新的旅程即将开始，放下包袱，跟随内心直觉。这是纯粹的开始，不受过去束缚。", rev:"鲁莽的冒险，愚蠢的决定，需要三思而后行。可能是在逃避责任。"},
+    {id:1, name:"魔术师", arcana:"大", img:"⚜", kw:"创造、能力、专注", up:"拥有实现目标所需的一切资源。创造力充沛，沟通能力强，是行动的最佳时机。", rev:"才能被埋没，缺乏方向感。可能是在玩弄手段或浪费天赋。"},
+    {id:2, name:"女祭司", arcana:"大", img:"🌙", kw:"直觉、智慧、内在", up:"倾听内心的声音，静待时机。知识来自内在而非外在，适合学习和冥想。", rev:"忽视直觉，表面化。可能因信息不足而做出错误判断。"},
+    {id:3, name:"皇后", arcana:"大", img:"👑", kw:"丰收、母爱、自然", up:"丰饶与收获的象征，享受生活的美好。代表母性、富足和自然的成长。", rev:"过度依赖他人，缺乏独立性。可能是创造力受阻或物质上的损失。"},
+    {id:4, name:"皇帝", arcana:"大", img:"⚔", kw:"权威、稳定、保护", up:"建立秩序与结构，运用权威和纪律达成目标。务实且负责任的领导者。", rev:"过度控制或滥用权力。缺乏纪律导致的混乱，或是父亲的缺席。"},
+    {id:5, name:"教皇", arcana:"大", img:"⛪", kw:"传统、信仰、教导", up:"寻求精神上的指引和教育。符合社会规范和传统价值观，适合学习。", rev:"打破传统，另辟蹊径。对现有体制的质疑和反叛。"},
+    {id:6, name:"恋人", arcana:"大", img:"💑", kw:"爱情、选择、合一", up:"面临重要的选择，跟随内心真爱的指引。关系和谐，价值观的融合。", rev:"关系失衡，价值观冲突。可能是在逃避承诺或面临分离。"},
+    {id:7, name:"战车", arcana:"大", img:"🏎", kw:"胜利、意志、决心", up:"以坚定的意志力克服障碍，取得胜利。控制住对立的力量向前推进。", rev:"缺乏方向感，意志薄弱。内在冲突导致的失败或停滞。"},
+    {id:8, name:"力量", arcana:"大", img:"💪", kw:"勇气、内在力量、耐心", up:"以柔克刚的力量。内心的勇气和坚定的信念可以征服一切困难。", rev:"自疑和软弱。缺乏自信导致力量无法发挥，或被恐惧控制。"},
+    {id:9, name:"隐士", arcana:"大", img:"🏮", kw:"内省、寻找真理、独处", up:"暂时远离喧嚣，沉静内省。独自寻找内心的光明和智慧。", rev:"过度孤立，害怕连接。可能是在逃避社会或拒绝他人帮助。"},
+    {id:10, name:"命运之轮", arcana:"大", img:"🎡", kw:"循环、变化、命运", up:"命运的转折点到来。好坏交替是人生常态，把握上升期的机会。", rev:"不期而遇的坏运气，抗拒改变。可能感到无力掌控自己的命运。"},
+    {id:11, name:"正义", arcana:"大", img:"⚖", kw:"公平、真相、因果", up:"因果报应的体现。做出公正的决定，真相将大白。付出的努力终有回报。", rev:"不公平的对待，逃避责任。法律纠纷或决策失误的风险。"},
+    {id:12, name:"倒吊人", arcana:"大", img:"🔄", kw:"牺牲、暂停、新视角", up:"以不同的角度看待问题。暂时的牺牲是为了更大的收获。学会放下和等待。", rev:"无谓的牺牲，拖延不决。拒绝改变而导致的自毁行为。"},
+    {id:13, name:"死神", arcana:"大", img:"💀", kw:"结束、转变、新生", up:"旧阶段的结束，新阶段的开始。虽然痛苦但无法避免。放手才能迎来新生。", rev:"抗拒改变，固守旧有模式。无法接受结束导致的停滞不前。"},
+    {id:14, name:"节制", arcana:"大", img:"⚖", kw:"平衡、适度、耐心", up:"寻找平衡和调和。以耐心和温和的方式达成目标，中庸之道是智慧。", rev:"失衡和极端。过度或不足都会导致问题。需要重新调整节奏。"},
+    {id:15, name:"恶魔", arcana:"大", img:"😈", kw:"束缚、欲望、物质", up:"被物质欲望或不良习惯所束缚。表面享受实则不自由，需要清醒认知。", rev:"挣脱束缚，获得自由。意识到问题的存在并开始改变。"},
+    {id:16, name:"高塔", arcana:"大", img:"🗼", kw:"剧变、崩塌、觉醒", up:"突如其来的变故摧毁原有的结构。虽是破坏却带来觉醒和重建的机会。", rev:"避免灾难的发生。危机已经过去，正在缓慢恢复中。"},
+    {id:17, name:"星星", arcana:"大", img:"⭐", kw:"希望、灵感、宁静", up:"平静和希望的感觉。内心充满灵感和信心，相信宇宙的指引。", rev:"失去信心和希望。感到迷茫无助，需要重新找到内心的光芒。"},
+    {id:18, name:"月亮", arcana:"大", img:"🌙", kw:"恐惧、幻想、潜意识", up:"内心的恐惧和不安浮现。直觉敏锐但也要警惕幻觉和欺骗。", rev:"克服恐惧，看清真相。潜意识的恐惧逐渐消散。"},
+    {id:19, name:"太阳", arcana:"大", img:"☀", kw:"成功、快乐、活力", up:"明媚的阳光照耀。成功和快乐就在眼前，充满能量和自信。一切都很美好。", rev:"暂时的挫折或快乐被掩盖。成功延迟但不代表失败。"},
+    {id:20, name:"审判", arcana:"大", img:"📯", kw:"觉醒、重生、审判", up:"灵魂的觉醒的时刻。过去的行为将得到评估，是重新开始的好时机。", rev:"自我怀疑，拒绝改变。未能从过去的经验中学习。"},
+    {id:21, name:"世界", arcana:"大", img:"🌍", kw:"完成、圆满、成就", up:"一个周期的圆满结束。目标达成，获得成就感和完整的体验。新的循环即将开始。", rev:"未完成的目标，延迟的计划。可能还有最后一件事需要处理。"},
+    // ===== 权杖（火）=====
+    {id:22, name:"权杖一", arcana:"小", suit:"权杖", img:"🔥", kw:"开始、灵感、新机会", up:"新的创意或项目诞生。充满热情和动力，是采取行动的最佳时机。", rev:"迟迟未能开始的计划，缺乏动力或方向。"},
+    {id:23, name:"权杖二", arcana:"小", suit:"权杖", img:"🔥", kw:"计划、决策、未来", up:"站在选择的十字路口。需要规划未来并做出勇敢的决定。", rev:"害怕走出舒适区。犹豫不决导致机会流失。"},
+    {id:24, name:"权杖三", arcana:"小", suit:"权杖", img:"🔥", kw:"远行、探索、扩张", up:"事业或项目的扩展。贸易、旅行或国际合作将带来好的发展。", rev:"计划受阻或延期。需要重新评估前进的方向。"},
+    {id:25, name:"权杖四", arcana:"小", suit:"权杖", img:"🔥", kw:"庆祝、和谐、家园", up:"庆祝和团聚的时刻。家庭和谐，工作稳定。享受努力带来的成果。", rev:"不稳定的基础。家庭或团队内部出现不和谐。"},
+    {id:26, name:"权杖五", arcana:"小", suit:"权杖", img:"🔥", kw:"竞争、冲突、挑战", up:"激烈的竞争和冲突。需要捍卫自己的立场，在竞争中成长。", rev:"避免冲突或达成和解。竞争过于激烈导致疲惫。"},
+    {id:27, name:"权杖六", arcana:"小", suit:"权杖", img:"🔥", kw:"胜利、认可、成功", up:"获得公开的认可和胜利。努力得到回报，地位提升，信心满满。", rev:"失败或缺乏认可。骄傲自满导致的跌落。"},
+    {id:28, name:"权杖七", arcana:"小", suit:"权杖", img:"🔥", kw:"防御、坚持、挑战", up:"面对挑战需要坚定立场。虽然处于劣势但勇气和坚持会让你胜出。", rev:"感到力不从心。放弃防守或屈服于压力。"},
+    {id:29, name:"权杖八", arcana:"小", suit:"权杖", img:"🔥", kw:"迅速、行动、进展", up:"事情进展迅速，势不可挡。行动的结果很快显现出来。", rev:"计划延迟或失控。速度太快反而导致混乱。"},
+    {id:30, name:"权杖九", arcana:"小", suit:"权杖", img:"🔥", kw:"韧性、坚持、警觉", up:"最后的坚持阶段。经历了多次挑战后仍保持警惕，黎明就在眼前。", rev:"精疲力竭，准备放弃。防守出现漏洞。"},
+    {id:31, name:"权杖十", arcana:"小", suit:"权杖", img:"🔥", kw:"负担、压力、责任", up:"承担了过多的责任和压力。虽能完成但已到极限，需要学会委派。", rev:"卸下负担或崩溃。无法承受压力导致的崩溃。"},
+    {id:32, name:"权杖侍从", arcana:"小", suit:"权杖", img:"🔥", kw:"探索、热情、消息", up:"带着热情探索新事物。可能收到好消息或新的学习机会。", rev:"缺乏方向感或热情消退。拖延和不成熟的表现。"},
+    {id:33, name:"权杖骑士", arcana:"小", suit:"权杖", img:"🔥", kw:"冒险、冲动、旅行", up:"充满冒险精神，行动力强。适合旅行或启动新项目。", rev:"冲动急躁导致的失败。计划因缺乏思考而中止。"},
+    {id:34, name:"权杖王后", arcana:"小", suit:"权杖", img:"🔥", kw:"自信、温暖、领导力", up:"自信且充满魅力的女性特质。领导能力强，热情大方，事业有成。", rev:"嫉妒心强，缺乏安全感。过于强势或专横。"},
+    {id:35, name:"权杖国王", arcana:"小", suit:"权杖", img:"🔥", kw:"开拓、胆识、领袖", up:"成熟的企业家精神。具备远见卓识和领导风范，事业成就显著。", rev:"专横跋扈或冒险过度。领导的失误导致团队损失。"},
+    // ===== 圣杯（水）=====
+    {id:36, name:"圣杯一", arcana:"小", suit:"圣杯", img:"💧", kw:"爱情、情感、新感情", up:"新的感情关系的开始。情感充沛，内心充满爱和喜悦。", rev:"情感被压抑或爱被拒绝。内心的空虚需要填补。"},
+    {id:37, name:"圣杯二", arcana:"小", suit:"圣杯", img:"💧", kw:"结合、友谊、爱", up:"平等的爱和友谊。两人之间的连接和谐美好，适合合作或订婚。", rev:"关系破裂或失衡。单相思或分离。"},
+    {id:38, name:"圣杯三", arcana:"小", suit:"圣杯", img:"💧", kw:"庆祝、友谊、社交", up:"和朋友们一起庆祝和享受。社交生活活跃，充满欢乐和快乐。", rev:"过度放纵或友谊出现裂痕。享乐主义导致的后果。"},
+    {id:39, name:"圣杯四", arcana:"小", suit:"圣杯", img:"💧", kw:"沉思、不满、冷漠", up:"对现状感到不满和厌倦。可能忽略了身边的好机会，需要调整心态。", rev:"新的机会被接受。从不满中走出来看见希望。"},
+    {id:40, name:"圣杯五", arcana:"小", suit:"圣杯", img:"💧", kw:"失落、悲伤、遗憾", up:"沉浸在失去的痛苦中。只看到失去的而没有注意到仍然拥有的事物。", rev:"接受过去，重新向前看。从悲伤中恢复过来。"},
+    {id:41, name:"圣杯六", arcana:"小", suit:"圣杯", img:"💧", kw:"怀旧、回忆、礼物", up:"回忆过去的美好时光。收到礼物或意外的好消息。内心充满温暖。", rev:"无法向前看。过度沉浸在过去而无法活在当下。"},
+    {id:42, name:"圣杯七", arcana:"小", suit:"圣杯", img:"💧", kw:"幻想、选择、梦想", up:"面对多种可能性的选择。梦想和幻想很丰富但需要脚踏实地。", rev:"明确的目标和方向。从幻想中清醒做出选择。"},
+    {id:43, name:"圣杯八", arcana:"小", suit:"圣杯", img:"💧", kw:"放弃、寻找、转变", up:"离开熟悉的环境去寻找更深层的意义。放下现有的一切去追求精神满足。", rev:"害怕改变或盲目离开。没有目标的流浪。"},
+    {id:44, name:"圣杯九", arcana:"小", suit:"圣杯", img:"💧", kw:"满足、幸福、愿望", up:"愿望成真，内心感到满足和幸福。情感上得到了想要的回报。", rev:"表面光鲜但内心空虚。过度追求物质享受而忽视情感。"},
+    {id:45, name:"圣杯十", arcana:"小", suit:"圣杯", img:"💧", kw:"幸福、圆满、永恒的爱", up:"幸福的家庭和持久的爱。情感的圆满和心灵的满足。和谐的关系。", rev:"家庭矛盾或关系破碎。理想的美好被现实打破。"},
+    {id:46, name:"圣杯侍从", arcana:"小", suit:"圣杯", img:"💧", kw:"敏感、直觉、邀请", up:"一个敏感而富有创造力的人。收到感情邀约或创作灵感。", rev:"情感不成熟或逃避责任。创造力受阻。"},
+    {id:47, name:"圣杯骑士", arcana:"小", suit:"圣杯", img:"💧", kw:"追求、浪漫、理想", up:"浪漫而优雅的追求者。为理想和爱情而努力，艺术气息浓厚。", rev:"过分理想化或不切实际的追求。情感欺骗。"},
+    {id:48, name:"圣杯王后", arcana:"小", suit:"圣杯", img:"💧", kw:"温柔、关怀、直觉", up:"充满爱心和直觉力的女性。善解人意，关心他人，情感丰富细腻。", rev:"过度情绪化或依赖性。情感上的不安全感。"},
+    {id:49, name:"圣杯国王", arcana:"小", suit:"圣杯", img:"💧", kw:"慈悲、包容、智慧", up:"成熟而富有同情心的领导。善于处理人际关系和情感问题。", rev:"情绪失控或操纵他人。过于敏感导致的判断失误。"},
+    // ===== 宝剑（风）=====
+    {id:50, name:"宝剑一", arcana:"小", suit:"宝剑", img:"⚡", kw:"思维、突破、真理", up:"清晰的思维和洞察力。新的想法或突破性的发现。坚持真理。", rev:"思维混乱或误解。判断力下降导致错误决定。"},
+    {id:51, name:"宝剑二", arcana:"小", suit:"宝剑", img:"⚡", kw:"抉择、回避、平衡", up:"面临艰难的抉择，试图在两者间找到平衡。需要面对而非回避。", rev:"信息过多无法抉择。或终于做出了决定。"},
+    {id:52, name:"宝剑三", arcana:"小", suit:"宝剑", img:"⚡", kw:"心痛、悲伤、创伤", up:"心碎和痛苦的时刻。遭遇背叛或感情伤害，需要时间来疗伤。", rev:"慢慢从伤痛中恢复。放下痛苦重新开始。"},
+    {id:53, name:"宝剑四", arcana:"小", suit:"宝剑", img:"⚡", kw:"休息、休养、沉思", up:"暂时的休息和独处。在忙碌之后需要时间和空间来恢复能量。", rev:"无法休息或从休养中回归。焦虑导致无法放松。"},
+    {id:54, name:"宝剑五", arcana:"小", suit:"宝剑", img:"⚡", kw:"冲突、失败、损失", up:"争吵和冲突后的伤痕累累。虽赢了争论但失去了更重要的东西。", rev:"和解或放下过去。从冲突中学习成长。"},
+    {id:55, name:"宝剑六", arcana:"小", suit:"宝剑", img:"⚡", kw:"过渡、疗愈、前行", up:"艰难但必需的过渡期。带着伤痛向前走，相信平静会到来。", rev:"无法走出过去或陷入困境。需要更多时间来疗愈。"},
+    {id:56, name:"宝剑七", arcana:"小", suit:"宝剑", img:"⚡", kw:"策略、欺骗、计划", up:"需要运用智慧和策略来解决问题。不要正面对抗，智取为上。", rev:"被欺骗或计划失败。诚实比小聪明更有效。"},
+    {id:57, name:"宝剑八", arcana:"小", suit:"宝剑", img:"⚡", kw:"束缚、困境、恐惧", up:"感觉被困住无法动弹。实际上束缚多来自内心的恐惧而非外界。", rev:"获得自由，摆脱束缚。看清真相后重获新生。"},
+    {id:58, name:"宝剑九", arcana:"小", suit:"宝剑", img:"⚡", kw:"焦虑、噩梦、担忧", up:"深夜的忧虑和恐惧。过度的焦虑和噩梦困扰。需要寻求帮助。", rev:"从焦虑中走出。学会面对和处理内心的恐惧。"},
+    {id:59, name:"宝剑十", arcana:"小", suit:"宝剑", img:"⚡", kw:"终结、痛苦、新的开始", up:"最糟糕的时期已经过去。看似绝望的结束其实是新的开始。", rev:"触底反弹或拒绝接受结束。黎明前的黑暗。"},
+    {id:60, name:"宝剑侍从", arcana:"小", suit:"宝剑", img:"⚡", kw:"警觉、沟通、学习", up:"思维敏捷的年轻人。善于沟通和学习，需要保持警觉和理性。", rev:"八卦或恶意的沟通。思维混乱导致的错误传播。"},
+    {id:61, name:"宝剑骑士", arcana:"小", suit:"宝剑", img:"⚡", kw:"行动、冲劲、捍卫", up:"快速行动和果断的决定。为信念而战，行动力强但需注意冲动。", rev:"鲁莽的行动或攻击性过强。计划不周导致的失败。"},
+    {id:62, name:"宝剑王后", arcana:"小", suit:"宝剑", img:"⚡", kw:"理智、独立、洞察", up:"聪明且独立的女性。理性分析能力强，能看到事物本质。", rev:"冷酷无情或刻薄。过于理性导致的感情缺失。"},
+    {id:63, name:"宝剑国王", arcana:"小", suit:"宝剑", img:"⚡", kw:"权威、公正、理性", up:"理智而公正的领导者。以逻辑和规则治理，追求真理和正义。", rev:"滥用权力或判断不公。冷血无情的决定。"},
+    // ===== 星币（土）=====
+    {id:64, name:"星币一", arcana:"小", suit:"星币", img:"💰", kw:"财富、机会、开始", up:"新的财务机会或事业开端。物质上的丰盛和稳定的开始。", rev:"财务机会的流失或错失良机。需要检视财务规划。"},
+    {id:65, name:"星币二", arcana:"小", suit:"星币", img:"💰", kw:"平衡、适应、变动", up:"需要在多个方面之间保持平衡。财务上的灵活调配。", rev:"失去平衡或财务混乱。过度支出需要收敛。"},
+    {id:66, name:"星币三", arcana:"小", suit:"星币", img:"💰", kw:"团队、合作、技能", up:"团队合作和技能提升。通过学习和团队努力达成更高的成就。", rev:"缺乏团队协作或技能不足。需要更多的培训和时间。"},
+    {id:67, name:"星币四", arcana:"小", suit:"星币", img:"💰", kw:"保守、守财、稳固", up:"财务上的保守和稳固。节俭是美德但过度则变成吝啬。", rev:"财务损失或过度慷慨。需要重新评估理财策略。"},
+    {id:68, name:"星币五", arcana:"小", suit:"星币", img:"💰", kw:"贫困、孤立、担忧", up:"经历财务困难或物质匮乏。精神上的孤立和担忧需要寻求帮助。", rev:"从困境中走出来。得到帮助或找到新的出路。"},
+    {id:69, name:"星币六", arcana:"小", suit:"星币", img:"💰", kw:"慷慨、慈善、分享", up:"财务上的帮助和分享。给予和接受的平衡。慈善和感恩。", rev:"不公平的分配或依赖。需要建立平等的互惠关系。"},
+    {id:70, name:"星币七", arcana:"小", suit:"星币", img:"💰", kw:"评估、投资、等待", up:"等待投资的结果。需要耐心和评估已付出的努力是否值得。", rev:"投入没有回报或计划失败。需要重新考虑投资方向。"},
+    {id:71, name:"星币八", arcana:"小", suit:"星币", img:"💰", kw:"勤奋、技能、专精", up:"专注于手头的工作。通过勤奋和技能提升获得稳定的收入。", rev:"工作倦怠或技能落后。需要提高效率或学习新技能。"},
+    {id:72, name:"星币九", arcana:"小", suit:"星币", img:"💰", kw:"享受、自律、独立", up:"通过自己的努力获得财务独立。享受辛勤工作的成果，生活安逸。", rev:"过度工作失去生活平衡。挥霍无度导致的损失。"},
+    {id:73, name:"星币十", arcana:"小", suit:"星币", img:"💰", kw:"财富、传承、家族", up:"家族企业的繁荣和世代传承。财务上的极大成功和稳定。", rev:"家族财务纠纷或破产风险。需要关注家族和睦。"},
+    {id:74, name:"星币侍从", arcana:"小", suit:"星币", img:"💰", kw:"学习、实践、信息", up:"踏实学习新技能。收到关于财务或工作的好消息。勤勉的学生。", rev:"拖延或缺乏计划。不切实际的幻想导致的失败。"},
+    {id:75, name:"星币骑士", arcana:"小", suit:"星币", img:"💰", kw:"勤奋、可靠、务实", up:"勤奋而可靠的年轻人。工作态度认真，一步一个脚印地前进。", rev:"懒惰或没有上进心。工作上的停滞不前。"},
+    {id:76, name:"星币王后", arcana:"小", suit:"星币", img:"💰", kw:"丰裕、务实、慈爱", up:"丰裕和实用的女性。管理财务能力强，生活品质高，懂得享受。", rev:"过度依赖物质或不够自信。财务上的担忧。"},
+    {id:77, name:"星币国王", arcana:"小", suit:"星币", img:"💰", kw:"成功、商业、财富", up:"成功的商人或投资者。财务自由，事业稳定，有着丰富的人生经验。", rev:"贪婪或财务上的失误。过于保守导致的机会流失。"}
+  ],
+
+  shuffle() {
+    var deck = [...this.cards];
+    for (var i = deck.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+    }
+    // 随机正逆位
+    for (var i = 0; i < deck.length; i++) {
+      deck[i].reversed = Math.random() < 0.5;
+    }
+    return deck;
+  },
+
+  draw(count) {
+    var deck = this.shuffle();
+    return deck.slice(0, count);
+  },
+
+    readSingle(card, position) {
+    var dir = card.reversed ? "逆位" : "正位";
+    var meaning = card.reversed ? card.rev : card.up;
+    var text = "";
+    text += "【"+position+"】"+card.name+"("+dir+")\n";
+    text += "关键词："+card.kw+"\n";
+    text += meaning+"\n";
+    if (card.guide) {
+      text += "\n📌 人生指引：\n" + card.guide;
+    } else if (card.suit) {
+      var guides = {
+        "权杀": "火元素提示：行动力是关键，不要空想",
+        "圣杯": "水元素提示：跟随情感和直觉，柔软的力量最强大",
+        "宝剑": "风元素提示：用理性分析问题，但不要被思维困住",
+        "星币": "土元素提示：务实是最好的策略"
+      };
+      text += "\n📌 " + (guides[card.suit] || "");
+    }
+    return text;
+  },
+
+    read(cards, spread) {
+    var text = "";
+    var positions = spread || cards.map(function(c,i){ return "第"+(i+1)+"张" });
+
+    // === 逐牌解读 ===
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var pos = positions[i] || "第"+(i+1)+"张";
+      text += "\n──────────\n";
+      text += this.readSingle(c, pos);
+    }
+
+    // === 综合分析 ===
+    text += "\n\n──────────\n🎯 综合分析 🎯";
+
+    var majors = cards.filter(function(c){ return c.arcana === "大" });
+    var revCnt = cards.filter(function(c){ return c.reversed }).length;
+    var elements = {};
+    cards.forEach(function(c){ if (c.element) elements[c.element] = (elements[c.element] || 0) + 1; });
+
+    // 大阿卡纳
+    if (majors.length >= 2) {
+      text += "\n📌 多张大阿卡纳：本次占卜影响深远";
+      if (majors.length >= 3) text += "，处于命运关键节点";
+    } else if (majors.length === 1) {
+      text += "\n📌 有大阿卡纳：当前问题有重要业力意义";
+    }
+
+    // 元素
+    var eKeys = Object.keys(elements);
+    if (eKeys.length > 0) {
+      var eMap = {"火":"🔥火(行动)","水":"💧水(情感)","风":"风(思维)","土":"⛰土(物质)"};
+      text += "\n📌 元素：" + eKeys.map(function(e){ return (eMap[e] || e) + elements[e] + "张" }).join(" ");
+    }
+
+    // 逆位
+    if (revCnt >= 3) {
+      text += "\n⚠️ 逆位牌" + revCnt + "张：挑战较多，耐心调整";
+    } else if (revCnt === 0 && cards.length >= 3) {
+      text += "\n✅ 全部正位！能量顺畅";
+    }
+
+    // 花色
+    var suits = {};
+    cards.forEach(function(c){ if (c.suit) suits[c.suit] = (suits[c.suit] || 0) + 1; });
+    var suitKeys = Object.keys(suits);
+    if (suitKeys.length > 0) {
+      var maxSuit = suitKeys.sort(function(a,b){ return suits[b] - suits[a] })[0];
+      var sMean = {"权杀":"事业创业能量最强","圣杯":"情感人际关系是重心","宝剑":"思维决策挑战较多","星币":"财务物质领域是重点"};
+      text += "\n📌 " + maxSuit + "牌最多→" + (sMean[maxSuit] || "");
+    }
+
+    // 宫廷牌
+    var courtCards = cards.filter(function(c){ return c.name && (c.name.indexOf("国王")>=0 || c.name.indexOf("王后")>=0 || c.name.indexOf("骑士")>=0 || c.name.indexOf("侍从")>=0); });
+    if (courtCards.length > 0) {
+      text += "\n👥 宫廷牌：";
+      for (var ci = 0; ci < courtCards.length; ci++) {
+        text += courtCards[ci].name + (courtCards[ci].reversed ? "(逆)" : "(正)") + " ";
+      }
+    }
+
+    // === 总结 ===
+    text += "\n\n──────────\n💡 占卜总结 💡";
+
+    var totalScore = 0;
+    cards.forEach(function(c){ totalScore += c.reversed ? -1 : 1; });
+    var avgScore = totalScore / cards.length;
+
+    if (avgScore > 0.5) {
+      text += "\n🌟 整体趋势：向好，能量积极";
+      if (majors.length >= 2) text += "\n🌌 生命转变：重大转变期，把握机会";
+    } else if (avgScore < -0.3) {
+      text += "\n🌟 整体趋势：偏低迷，需调整心态";
+      text += "\n⚠️ 注意：挑战较多，行动前多思量";
+    } else {
+      text += "\n🌟 整体趋势：平稳，顺其自然";
+    }
+
+    // 建议
+    text += "\n🔥 建议：";
+    if (majors.length >= 2 && revCnt === 0) {
+      text += "勇敢追求目标！";
+    } else if (revCnt >= 3) {
+      text += "逆境是成长机会，静心反思";
+    } else {
+      var domE = eKeys.sort(function(a,b){ return elements[b] - elements[a] })[0];
+      if (domE === "水") text += "倾听内心直觉";
+      else if (domE === "火") text += "行动力充沛，别太冲动";
+      else text += "保持平和，一切最好安排";
+    }
+
+    return text;
+  },
+
+  spreads: {
+    single: {name:"单张占卜",positions:["今日指引"],desc:"一张牌快速指引"},
+    three: {name:"三张牌",positions:["过去","现在","未来"],desc:"时间流三张，看事态发展"},
+    cross: {name:"十字阵",positions:["现状","阻碍","过去","未来","希望","结果"],desc:"六张深入分析"}
+  }
+};
+
+
+// ===== 塔罗占卜交互 =====
+document.getElementById("btnTarotDraw").addEventListener("click", function(){
+  var spread = document.getElementById("tarotSpread").value;
+  var question = document.getElementById("tarotQuestion").value;
+  var qLabels = {general:"综合运势", love:"爱情感情", career:"事业发展", wealth:"财运趋势", health:"健康状况", family:"家庭关系", study:"学业考试", choose:"选择决策"};
+  var qText = qLabels[question] || "综合运势";
+  var counts = {single:1, three:3, cross:6};
+  var names = {single:["今日指引"], three:["过去","现在","未来"], cross:["现状","阻碍","过去","未来","希望","结果"]};
+  var count = counts[spread] || 1;
+  var cards = TarotDeck.draw(count);
+  var positions = names[spread] || [];
+  
+  // 显示牌面
+  var html = '<div class="tarot-card-container">';
+  for (var i = 0; i < cards.length; i++) {
+    var c = cards[i];
+    var revClass = c.reversed ? "reversed" : "";
+    var delay = i * 0.1;
+    html += '<div class="tarot-card ' + revClass + ' flip" style="animation-delay:' + delay + 's">';
+    html += '<div class="card-img">' + c.img + '</div>';
+    html += '<div class="card-name">' + c.name + '</div>';
+    html += '<div class="card-keywords">' + (c.kw || '') + '</div>';
+    html += '<div class="card-arcana">' + (c.arcana === "大" ? "大阿卡纳" : c.suit) + '</div>';
+    if (c.reversed) html += '<div style="color:#ff6b6b;font-size:0.6em">逆位</div>';
+    html += '</div>';
+  }
+  html += "</div>";
+  document.getElementById("tarotCards").innerHTML = html;
+  
+  // 显示解读
+  var reading = "📝 专项占卜：" + qText + "\n\n" + TarotDeck.read(cards, positions);
+  document.getElementById("tarotReading").style.display = "block";
+  document.getElementById("tarotReading").innerHTML = '<div class="tarot-reading">' + reading.replace(/\n/g, "<br>") + '</div>';
+});
+
+document.getElementById("btnTarotClear").addEventListener("click", function(){
+  document.getElementById("tarotCards").innerHTML = '<p style="color:#5c5c7a;padding:30px">点击「洗牌抽牌」开始占卜</p>';
+  document.getElementById("tarotReading").style.display = "none";
+  document.getElementById("tarotReading").innerHTML = "";
+});
+
+</script>
+</body>
+</html>
