@@ -52,26 +52,27 @@ footer{text-align:center;padding:30px;color:#3d3d5c;font-size:0.85em}
 </div>
 <div id="panel-input" class="panel active">
 <div class="form-grid">
-<div class="form-group"><label>姓名</label><input type="text" id="inputName" value="沈品淇"></div>
+<div class="form-group"><label>姓名</label><input type="text" id="inputName" placeholder=""></div>
 <div class="form-group"><label>性别</label><select id="inputGender"><option value="男">男</option><option value="女">女</option></select></div>
-<div class="form-group"><label>出生年份</label><input type="number" id="inputYear" value="2001"></div>
-<div class="form-group"><label>出生月份</label><input type="number" id="inputMonth" value="4"></div>
-<div class="form-group"><label>出生日期</label><input type="number" id="inputDay" value="3"></div>
+<div class="form-group"><label>出生年份</label><input type="number" id="inputYear" placeholder=""></div>
+<div class="form-group"><label>出生月份</label><input type="number" id="inputMonth" placeholder=""></div>
+<div class="form-group"><label>出生日期</label><input type="number" id="inputDay" placeholder=""></div>
 <div class="form-group"><label>出生时辰</label><select id="inputHour">
+<option value="">-- 请选择 --</option>
 <option value="0">子时 (23-01)</option>
 <option value="2">丑时 (01-03)</option>
 <option value="4">寅时 (03-05)</option>
 <option value="6">卯时 (05-07)</option>
 <option value="8">辰时 (07-09)</option>
 <option value="10">巳时 (09-11)</option>
-<option value="12" selected>午时 (11-13)</option>
+<option value="12">午时 (11-13)</option>
 <option value="14">未时 (13-15)</option>
 <option value="16">申时 (15-17)</option>
 <option value="18">酉时 (17-19)</option>
 <option value="20">戌时 (19-21)</option>
 <option value="22">亥时 (21-23)</option>
 </select></div>
-<div class="form-group"><label>出生地</label><input type="text" id="inputPlace" value="台北"></div>
+<div class="form-group"><label>出生地</label><input type="text" id="inputPlace" placeholder=""></div>
 <button class="btn-submit" id="btnCompute">☯ 开始排盘</button>
 </div>
 </div>
@@ -96,7 +97,7 @@ var BaziEngine = {
 地支五行:{子:"水",丑:"土",寅:"木",卯:"木",辰:"土",巳:"火",午:"火",未:"土",申:"金",酉:"金",戌:"土",亥:"水"},
 藏干:{子:["癸"],丑:["己","癸","辛"],寅:["甲","丙","戊"],卯:["乙"],辰:["戊","乙","癸"],巳:["丙","庚","戊"],午:["丁","己"],未:["己","丁","乙"],申:["庚","壬","戊"],酉:["辛"],戌:["戊","辛","丁"],亥:["壬","甲"]},
 纳音KV:{"甲子乙丑":"海中金","丙寅丁卯":"炉中火","戊辰己巳":"大林木","庚午辛未":"路旁土","壬申癸酉":"剑锋金","甲戌乙亥":"山头火","丙子丁丑":"涧下水","戊寅己卯":"城头土","庚辰辛巳":"白蜡金","壬午癸未":"杨柳木","甲申乙酉":"泉中水","丙戌丁亥":"屋上土","戊子己丑":"霹雳火","庚寅辛卯":"松柏木","壬辰癸巳":"长流水","甲午乙未":"沙中金","丙申丁酉":"山下火","戊戌己亥":"平地木","庚子辛丑":"壁上土","壬寅癸卯":"金箔金","甲辰乙巳":"覆灯火","丙午丁未":"天河水","戊申己酉":"大驿土","庚戌辛亥":"钗钏金","壬子癸丑":"桑柘木","甲寅乙卯":"大溪水","丙辰丁巳":"沙中土","戊午己未":"天上火","庚申辛酉":"石榴木","壬戌癸亥":"大海水"},
-十神:{比肩:["甲甲","乙乙","丙丙","丁丁","戊戊","己己","庚庚","辛辛","壬壬","癸癸"],劫财:["甲乙","乙甲","丙丁","丁丙","戊己","己戊","庚辛","辛庚","壬癸","癸壬"],食神:["甲丙","乙丁","丙戊","丁己","戊庚","己辛","庚壬","辛癸","壬甲","癸乙"],伤官:["甲丁","乙丙","丙己","丁戊","戊辛","己庚","庚癸","辛壬","壬乙","癸甲"],偏财:["甲戊","乙己","丙庚","丁辛","戊壬","己癸","庚甲","辛乙","壬丙","癸丁"],正财:["甲己","乙戊","丙辛","丁庚","戊癸","己壬","庚乙","辛甲","壬丁","癸丙"],偏官:["甲庚","乙辛","丙壬","丁癸","戊甲","己乙","庚丙","辛丁","壬戊","癸己"],正官:["甲辛","乙庚","丙癸","丁壬","戊乙","己甲","庚丁","辛丙","壬己","癸戊"],偏印:["甲壬","乙癸","丙甲","丁乙","戊丙","己丁","庚戊","辛己","壬庚","癸辛"],正印:["甲癸","乙壬","丙乙","丁甲","戊丁","己丙","庚己","辛戊","壬辛","庚癸"]},
+十神:{比肩:["甲甲","乙乙","丙丙","丁丁","戊戊","己己","庚庚","辛辛","壬壬","癸癸"],劫财:["甲乙","乙甲","丙丁","丁丙","戊己","己戊","庚辛","辛庚","壬癸","癸壬"],食神:["甲丙","乙丁","丙戊","丁己","戊庚","己辛","庚壬","辛癸","壬甲","癸乙"],伤官:["甲丁","乙丙","丙己","丁戊","戊辛","己庚","庚癸","辛壬","壬乙","癸甲"],偏财:["甲戊","乙己","丙庚","丁辛","戊壬","己癸","庚甲","辛乙","壬丙","癸丁"],正财:["甲己","乙戊","丙辛","丁庚","戊癸","己壬","庚乙","辛甲","壬丁","癸丙"],偏官:["甲庚","乙辛","丙壬","丁癸","戊甲","己乙","庚丙","辛丁","壬戊","癸己"],正官:["甲辛","乙庚","丙癸","丁壬","戊乙","己甲","庚丁","辛丙","壬己","癸戊"],偏印:["甲壬","乙癸","丙甲","丁乙","戊丙","己丁","庚戊","辛己","壬庚","癸辛"],正印:["甲癸","乙壬","丙乙","丁甲","戊丁","己丙","庚己","辛戊","壬辛","癸庚"]},
 立春日:{2001:4,2002:4,2003:4,2004:4,2005:4,2020:4,2021:3,2022:4,2023:4,2024:4,2025:3,2026:4,2027:4,2028:4,2029:3,2030:4,1977:4},
 月支表:{2:"寅",3:"卯",4:"辰",5:"巳",6:"午",7:"未",8:"申",9:"酉",10:"戌",11:"亥",12:"子",1:"丑"},
 节气日:{2:{日:4},3:{日:6},4:{日:5},5:{日:6},6:{日:6},7:{日:7},8:{日:7},9:{日:8},10:{日:8},11:{日:7},12:{日:7},1:{日:6}},
@@ -137,7 +138,7 @@ var zb=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
 return{干:this.天干[(si+zb.indexOf(sz))%10],支:sz,时辰名:this.时辰名[sz]};
 },
 get十神:function(dG,oG){
-for(var s in this.十神){if(this.十神[s].includes(dG+oG)||this.十神[s].includes(oG+dG))return s}
+for(var s in this.十神){if(this.十神[s].includes(dG+oG))return s}
 return"";
 },
 排盘:function(b){
@@ -262,7 +263,7 @@ const FiveSchools = {
     return {
       name: "② 格局法",
       basis: `月令${月支}，月干透${月干}为${月干十神}，定${格局}。${财印相战?"天干双透财星与印星，财印交战，格局有情中带逆。":"格局清纯。"}`,
-      content: `【${格局}】人生主线矛盾：${财印相战?"才华与赚钱之间的拉扯——在"深耕技术"和"变现赚钱"之间反复摇摆。":"格局清纯，一生路线较为专一。"}${格局.includes("印")?"有文化底蕴、学习能力强，适合靠知识和技能立身。":""}${格局.includes("财")?"有商业头脑，能发现赚钱机会。":""}大运若能调和财印，则事业大成。`
+      content: `【${格局}】人生主线矛盾：${财印相战?"才华与赚钱之间的拉扯——在「深耕技术」和「变现赚钱」之间反复摇摆。":"格局清纯，一生路线较为专一。"}${格局.includes("印")?"有文化底蕴、学习能力强，适合靠知识和技能立身。":""}${格局.includes("财")?"有商业头脑，能发现赚钱机会。":""}大运若能调和财印，则事业大成。`
     };
   },
 
@@ -371,7 +372,9 @@ var g=document.getElementById("inputGender").value;
 var y=parseInt(document.getElementById("inputYear").value);
 var m=parseInt(document.getElementById("inputMonth").value);
 var d=parseInt(document.getElementById("inputDay").value);
-var h=parseInt(document.getElementById("inputHour").value);
+var hStr=document.getElementById("inputHour").value;
+if(!y||!m||!d||hStr===""){alert("请填写完整的出生信息");return}
+var h=parseInt(hStr);
 var p=document.getElementById("inputPlace").value;
 var r=B.排盘({year:y,month:m,day:d,hour:h,gender:g,place:p});
 cr={name:n,gender:g,year:y,month:m,day:d,hour:h,place:p};
